@@ -129,6 +129,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
               setMode('signup');
               setErrorMsg(null);
               setSignupSuccessMsg(null);
+              setSignupEmail('');
+              setSignupPassword('');
+              setSignupMobile('');
+              setSignupCity('');
+              setSignupBusiness('');
             }}
             className={`py-2 text-xs font-bold rounded-xl transition ${
               mode === 'signup'
@@ -221,7 +226,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
 
           {/* SIGNUP FORM: mobile, email, password, city */}
           {mode === 'signup' && (
-            <form onSubmit={handleSignupSubmit} className="space-y-3.5">
+            <form onSubmit={handleSignupSubmit} className="space-y-3.5" autoComplete="off">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1.5">
                   <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
@@ -230,6 +235,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                 <input
                   type="tel"
                   required
+                  autoComplete="off"
                   value={signupMobile}
                   onChange={(e) => setSignupMobile(e.target.value)}
                   placeholder="e.g. 9876543210"
@@ -245,6 +251,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                 <input
                   type="email"
                   required
+                  autoComplete="off"
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   placeholder="name@business.com"
@@ -260,6 +267,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                 <input
                   type="text"
                   required
+                  autoComplete="off"
                   value={signupCity}
                   onChange={(e) => setSignupCity(e.target.value)}
                   placeholder="e.g. Morbi, Ahmedabad, Mumbai"
@@ -274,6 +282,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                 </label>
                 <input
                   type="text"
+                  autoComplete="off"
                   value={signupBusiness}
                   onChange={(e) => setSignupBusiness(e.target.value)}
                   placeholder="e.g. Royal Ceramic Works"
@@ -290,6 +299,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
+                    autoComplete="new-password"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
                     placeholder="Min 6 characters"
