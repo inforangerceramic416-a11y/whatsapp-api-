@@ -33,11 +33,12 @@ export interface MetaConfig {
   messagingLimit: string;
   status: 'CONNECTED' | 'DISCONNECTED' | 'PENDING_VERIFICATION' | 'RESTRICTED';
   coexistenceEnabled: boolean;
-  coexistenceStatus: 'CONNECTED' | 'NOT_CONNECTED' | 'NOT_ELIGIBLE';
-  webhookStatus: 'ACTIVE' | 'PENDING' | 'ERROR';
-  tokenStatus: 'VALID' | 'EXPIRED' | 'MISSING';
+  coexistenceStatus: 'CONNECTED' | 'NOT_CONNECTED' | 'NOT_ELIGIBLE' | 'DISCONNECTED';
+  webhookStatus: 'ACTIVE' | 'PENDING' | 'ERROR' | 'PENDING_SETUP';
+  tokenStatus: 'VALID' | 'EXPIRED' | 'MISSING' | 'INVALID';
   lastSyncTime: string;
   isDemoMode: boolean;
+  permanentToken?: string;
 }
 
 export interface WhatsAppMessage {

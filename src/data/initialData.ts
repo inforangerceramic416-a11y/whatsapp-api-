@@ -60,11 +60,11 @@ export const INITIAL_TEAM_MEMBERS: TeamMember[] = [
     name: 'Rajesh Patel',
     email: 'info.rangerceramic416@gmail.com',
     phone: '+91 90992 68044',
-    role: 'Admin',
-    department: 'Sales & Operations',
-    activeConversations: 0,
+    role: 'ADMIN',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
+    activeChatsCount: 0,
     status: 'online',
-    isAiAssistant: false
+    assignedDepartment: 'Sales & Operations'
   }
 ];
 
@@ -78,42 +78,29 @@ export const INITIAL_TEMPLATES: WhatsAppTemplate[] = [];
 
 export const INITIAL_CAMPAIGNS: Campaign[] = [];
 
-export const INITIAL_AUTOMATIONS: AutomationWorkflow[] = [
-  {
-    id: 'auto-1',
-    name: 'Dealer E-Catalogue Auto-Sender',
-    description: 'When dealer asks for price or catalogue, auto-send official PDF with company profile.',
-    triggerType: 'KEYWORD_MATCH',
-    triggerValue: 'price, catalogue, catalogue pdf, rate list, sample',
-    actionType: 'SEND_TEMPLATE',
-    actionPayload: 'laxtone_catalogue_launch_2026',
-    isActive: true,
-    triggeredCount: 0
-  }
-];
+export const INITIAL_AUTOMATIONS: AutomationWorkflow[] = [];
 
 export const INITIAL_AI_AGENT: AIAgentConfig = {
-  id: 'ai-bot-laxtone',
-  name: 'Laxtone AI Sales Executive',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  description: 'AI ceramic tile consultant trained on Morbi manufacturing specifications, slab sizes, export container logistics, and dealer qualification.',
-  personality: 'PROFESSIONAL',
-  knowledgeBase: {
-    companyName: 'LAXTONE CERAMIC',
-    factoryLocation: 'Morbi, Gujarat, India (Ceramic Capital of India)',
-    specialties: 'Carving tiles (600x1200mm), Porcelain slabs (800x1600mm), Wall tiles (300x600mm), Heavy pavers',
-    minOrderQuantity: '1 FCL Container for exports (Approx 1400-1800 boxes) or 1 truckload (approx 1200 boxes) for domestic Morbi dealers.',
-    exportPorts: 'Mundra Port & Pipavav Port, Gujarat, India',
-    pricingNote: 'Prices are Ex-Factory Morbi excluding GST and freight charges. Discounts apply on volumes above 2500 boxes.'
-  },
-  handoverRules: [
-    'Customer asks for credit terms longer than 30 days',
-    'Customer demands custom packaging or private OEM tile labeling',
-    'Price discount requested above 15% from wholesale list',
-    'Complaint regarding transit breakage or tile shade variance'
-  ],
+  aiName: 'Laxtone AI Sales Executive',
   enabled: true,
-  autoReplyDelaySeconds: 2
+  systemInstruction: 'You are an intelligent WhatsApp AI sales executive for Laxtone Ceramic in Morbi, Gujarat. Assist buyers with tile dimensions, finishes, wholesale dealership queries, and handover to sales manager when requested.',
+  tone: 'professional',
+  supportedLanguages: ['en', 'hi', 'gu'],
+  businessInfo: {
+    companyName: 'LAXTONE CERAMIC',
+    industry: 'Tiles & Ceramic Manufacturing',
+    productsSummary: 'GVT, PGVT, Wall Tiles, Porcelain Slabs, Full Body Pavers',
+    catalogues: [],
+    pricePolicy: 'Ex-Factory Morbi prices',
+    contactSupport: '+91 90992 68044'
+  },
+  maxAITurnsBeforeHandover: 3,
+  handoverTriggers: {
+    priceNegotiation: true,
+    customerRequestedHuman: true,
+    complaintDetected: true,
+    lowConfidence: true
+  }
 };
 
 export const INITIAL_MEDIA: MediaAsset[] = [];

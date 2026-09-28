@@ -9,7 +9,7 @@ import {
   addDoc
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { COLLECTIONS, seedInitialFirestoreData } from '../services/firestoreSync';
+import { COLLECTIONS, seedInitialFirestoreData, purgeAllWorkspaceDataFromFirestore } from '../services/firestoreSync';
 import { metaApiClient } from '../services/metaWhatsAppApi';
 import {
   MetaConfig,
@@ -52,6 +52,7 @@ import {
 interface AppContextType {
   currentUser: UserAccount | null;
   allUsers: UserAccount[];
+  impersonatingFromMaster: boolean;
   systemVersion: SystemVersion;
   isAuthenticated: boolean;
   isMasterLoggedIn: boolean;
@@ -65,6 +66,8 @@ interface AppContextType {
   approveUser: (userId: string) => Promise<void>;
   rejectUser: (userId: string) => Promise<void>;
   publishSystemUpdate: (releaseNotes: string, globalNotice?: string) => Promise<void>;
+  viewUserWorkspace: (user: UserAccount) => void;
+  returnToMaster: () => void;
 
   metaConfig: MetaConfig;
   companyProfile: typeof INITIAL_COMPANY_PROFILE;
@@ -146,6 +149,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [allUsers, setAllUsers] = useState<UserAccount[]>([DEFAULT_MASTER]);
+  const [impersonatingFromMaster, setImpersonatingFromMaster] = useState(false);
   const [systemVersion, setSystemVersion] = useState<SystemVersion>(DEFAULT_VERSION);
   const [masterPasswordModalOpen, setMasterPasswordModalOpen] = useState(false);
   const [isMasterPanelUnlocked, setIsMasterPanelUnlocked] = useState(false);
@@ -155,7 +159,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [contacts, setContacts] = useState<Contact[]>(INITIAL_CONTACTS);
   const [segments, setSegments] = useState<AudienceSegment[]>(INITIAL_SEGMENTS);
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
-  const [activeConversationId, setActiveConversationId] = useState<string>('conv-1');
+  const [activeConversationId, setActiveConversationId] = useState<string>('');
   const [messages, setMessages] = useState<WhatsAppMessage[]>(INITIAL_MESSAGES_CONV_1);
   const [templates, setTemplates] = useState<WhatsAppTemplate[]>(INITIAL_TEMPLATES);
   const [campaigns, setCampaigns] = useState<Campaign[]>(INITIAL_CAMPAIGNS);
@@ -440,7 +444,57 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const logout = () => {
     setCurrentUser(null);
     setIsMasterPanelUnlocked(false);
+    setImpersonatingFromMaster(false);
     localStorage.removeItem('lx_logged_in_user');
+  };
+
+  // MASTER ADMIN: Directly view and inspect any approved user's panel/workspace
+  const viewUserWorkspace = (targetUser: UserAccount) => {
+    setImpersonatingFromMaster(true);
+    setCurrentUser(targetUser);
+
+    // Load target user's company profile & panel settings
+    setCompanyProfile({
+      companyName: targetUser.businessName || `${targetUser.city} Ceramic`,
+      brandTagline: `Official WhatsApp Node - ${targetUser.city}`,
+      industry: 'Tiles & Ceramic Business',
+      website: '',
+      email: targetUser.email,
+      phone: targetUser.mobile,
+      address: `${targetUser.city}, India`,
+      gstin: '',
+      description: `WhatsApp Business Platform node for ${targetUser.businessName || targetUser.mobile}.`,
+      productCategories: [
+        'Vitrified Floor Tiles',
+        'Wall Highlighter Tiles',
+        'Architectural Slabs'
+      ]
+    });
+
+    setMetaConfig({
+      appId: '',
+      wabaId: '',
+      phoneNumberId: '',
+      displayPhoneNumber: targetUser.mobile.startsWith('+') ? targetUser.mobile : `+91 ${targetUser.mobile}`,
+      businessName: targetUser.businessName || `${targetUser.city} Ceramic`,
+      qualityRating: 'UNKNOWN',
+      messagingLimit: 'TIER_NOT_CONNECTED',
+      status: 'DISCONNECTED',
+      coexistenceEnabled: false,
+      coexistenceStatus: 'DISCONNECTED',
+      webhookStatus: 'PENDING_SETUP',
+      tokenStatus: 'INVALID',
+      lastSyncTime: `Inspecting ${targetUser.businessName} Panel as Master`,
+      isDemoMode: false
+    });
+  };
+
+  // Return back to Master Super Admin Panel
+  const returnToMaster = () => {
+    setImpersonatingFromMaster(false);
+    setCurrentUser(DEFAULT_MASTER);
+    setIsMasterPanelUnlocked(true);
+    localStorage.setItem('lx_logged_in_user', JSON.stringify(DEFAULT_MASTER));
   };
 
   const approveUser = async (userId: string) => {
@@ -864,17 +918,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const clearDemoData = async () => {
-    // Reset state to clean real-time workspace
+    // 1. Reset all local states to 100% clean, blank workspace
+    setContacts([]);
+    setSegments([]);
     setConversations([]);
     setMessages([]);
+    setActiveConversationId('');
     setCampaigns([]);
     setCtwaLeads([]);
-    setActiveConversationId('');
-    
-    // Switch off demo mode
+    setWebhookLogs([]);
+    setMediaAssets([]);
+    setFlows([]);
+    setForms([]);
+    setAutomations([]);
+
+    // 2. Wipe all remote Firestore documents in data collections
+    await purgeAllWorkspaceDataFromFirestore();
+
+    // 3. Switch off demo mode & set clean status
     await updateMetaConfig({
       isDemoMode: false,
-      lastSyncTime: 'Clean Production Workspace Activated'
+      lastSyncTime: 'Clean Live Workspace Activated'
     });
   };
 
@@ -883,6 +947,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         currentUser,
         allUsers,
+        impersonatingFromMaster,
         systemVersion,
         isAuthenticated: Boolean(currentUser),
         isMasterLoggedIn: currentUser?.role === 'master',
@@ -896,6 +961,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         approveUser,
         rejectUser,
         publishSystemUpdate,
+        viewUserWorkspace,
+        returnToMaster,
 
         metaConfig,
         companyProfile,

@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   updateDoc,
@@ -69,88 +70,57 @@ export const COLLECTIONS = {
   WEBHOOKS: 'webhook_logs'
 };
 
-// Check and seed initial data if Firestore is empty
+// Collections to be wiped completely for clean blank production workspace
+const WIPABLE_COLLECTIONS = [
+  COLLECTIONS.CONTACTS,
+  COLLECTIONS.CONVERSATIONS,
+  COLLECTIONS.MESSAGES,
+  COLLECTIONS.CAMPAIGNS,
+  COLLECTIONS.SEGMENTS,
+  COLLECTIONS.CTWA_LEADS,
+  COLLECTIONS.WEBHOOKS,
+  COLLECTIONS.MEDIA,
+  COLLECTIONS.FLOWS,
+  COLLECTIONS.FORMS,
+  COLLECTIONS.AUTOMATIONS,
+  COLLECTIONS.TEMPLATES
+];
+
+// Completely flush and purge all demo/temporary data from Firestore
+export async function purgeAllWorkspaceDataFromFirestore() {
+  console.log('🧹 Purging all demo entries, chats, contacts and campaigns from Firestore...');
+  try {
+    for (const colName of WIPABLE_COLLECTIONS) {
+      const snap = await getDocs(collection(db, colName));
+      const deletePromises = snap.docs.map(docSnap => deleteDoc(docSnap.ref));
+      await Promise.all(deletePromises);
+    }
+
+    // Reset meta config to clean disconnected state
+    await setDoc(doc(db, COLLECTIONS.META_CONFIG, 'current'), INITIAL_META_CONFIG, { merge: true });
+    console.log('✨ All collections successfully wiped. Workspace is now 100% clean and blank.');
+  } catch (error) {
+    console.error('Error while purging workspace collections from Firestore:', error);
+  }
+}
+
+// Check and seed initial data if Firestore is empty (Only Core Master & System Config, NO DEMO CHATS/CONTACTS)
 export async function seedInitialFirestoreData() {
   try {
     const metaDocRef = doc(db, COLLECTIONS.META_CONFIG, 'current');
-    const contactsSnap = await getDocs(collection(db, COLLECTIONS.CONTACTS));
+    const metaSnap = await getDoc(metaDocRef);
 
-    if (contactsSnap.empty) {
-      console.log('🌱 Seeding initial Laxtone Ceramic data into Firestore for real-time sync...');
+    if (!metaSnap.exists()) {
+      console.log('🌱 Initializing clean production config for Laxtone Ceramic in Firestore...');
 
-      // Seed meta config
+      // Seed clean meta config
       await setDoc(metaDocRef, INITIAL_META_CONFIG);
 
       // Seed company profile
       await setDoc(doc(db, COLLECTIONS.COMPANY_PROFILE, 'laxtone'), INITIAL_COMPANY_PROFILE);
 
-      // Seed contacts
-      for (const contact of INITIAL_CONTACTS) {
-        await setDoc(doc(db, COLLECTIONS.CONTACTS, contact.id), contact);
-      }
-
-      // Seed segments
-      for (const seg of INITIAL_SEGMENTS) {
-        await setDoc(doc(db, COLLECTIONS.SEGMENTS, seg.id), seg);
-      }
-
-      // Seed conversations
-      for (const conv of INITIAL_CONVERSATIONS) {
-        await setDoc(doc(db, COLLECTIONS.CONVERSATIONS, conv.id), conv);
-      }
-
-      // Seed messages
-      for (const msg of INITIAL_MESSAGES_CONV_1) {
-        await setDoc(doc(db, COLLECTIONS.MESSAGES, msg.id), msg);
-      }
-
-      // Seed templates
-      for (const tmpl of INITIAL_TEMPLATES) {
-        await setDoc(doc(db, COLLECTIONS.TEMPLATES, tmpl.id), tmpl);
-      }
-
-      // Seed campaigns
-      for (const cmp of INITIAL_CAMPAIGNS) {
-        await setDoc(doc(db, COLLECTIONS.CAMPAIGNS, cmp.id), cmp);
-      }
-
-      // Seed automations
-      for (const auto of INITIAL_AUTOMATIONS) {
-        await setDoc(doc(db, COLLECTIONS.AUTOMATIONS, auto.id), auto);
-      }
-
-      // Seed AI agent
+      // Seed AI agent config
       await setDoc(doc(db, COLLECTIONS.AI_AGENT, 'config'), INITIAL_AI_AGENT);
-
-      // Seed team members
-      for (const member of INITIAL_TEAM_MEMBERS) {
-        await setDoc(doc(db, COLLECTIONS.TEAM, member.id), member);
-      }
-
-      // Seed media
-      for (const med of INITIAL_MEDIA) {
-        await setDoc(doc(db, COLLECTIONS.MEDIA, med.id), med);
-      }
-
-      // Seed CTWA leads
-      for (const lead of INITIAL_CTWA_LEADS) {
-        await setDoc(doc(db, COLLECTIONS.CTWA_LEADS, lead.id), lead);
-      }
-
-      // Seed flows
-      for (const fl of INITIAL_FLOWS) {
-        await setDoc(doc(db, COLLECTIONS.FLOWS, fl.id), fl);
-      }
-
-      // Seed forms
-      for (const fm of INITIAL_FORMS) {
-        await setDoc(doc(db, COLLECTIONS.FORMS, fm.id), fm);
-      }
-
-      // Seed webhooks
-      for (const wh of INITIAL_WEBHOOK_LOGS) {
-        await setDoc(doc(db, COLLECTIONS.WEBHOOKS, wh.id), wh);
-      }
 
       // Seed Master Account
       await setDoc(doc(db, COLLECTIONS.USERS, 'master_9974428034'), {
@@ -171,14 +141,14 @@ export async function seedInitialFirestoreData() {
       await setDoc(doc(db, COLLECTIONS.SYSTEM_VERSION, 'version'), {
         sequence: 1001,
         versionCode: 'ver - 1001',
-        releaseNotes: 'Multi-Tenant Architecture, Master Admin Panel & Approval System Online',
+        releaseNotes: 'Clean Multi-Tenant Architecture & Master Admin Panel Online',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Master Admin'
       });
 
-      console.log('✅ Initial seed completed successfully.');
+      console.log('✅ Clean initial setup completed (Zero demo entries).');
     }
   } catch (error) {
-    console.error('Error during Firestore seeding:', error);
+    console.error('Notice during Firestore initialization:', error);
   }
 }

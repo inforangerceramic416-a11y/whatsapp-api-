@@ -1,6 +1,4 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default function handler(req: any, res: any) {
   // 1. META WEBHOOK GET VERIFICATION
   if (req.method === 'GET') {
     const mode = req.query['hub.mode'];

@@ -34,7 +34,7 @@ export const SettingsView: React.FC = () => {
   };
 
   const handleClearDemo = async () => {
-    if (window.confirm('Kya aap sure hain ki saare Demo Chats, Messages aur Mock Campaigns ko delete karke clean Real Production Workspace shuru karna chahte hain?')) {
+    if (window.confirm('Kya aap sure hain ki saare Demo Chats, Messages, Contacts aur Mock Campaigns ko delete karke 100% Clean Blank Production Workspace shuru karna chahte hain?')) {
       setIsClearing(true);
       await clearDemoData();
       setDevMode(false);
@@ -155,7 +155,7 @@ export const SettingsView: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
             <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              Real contacts aur Meta-Approved templates safe rahenge. Sirf sample messages aur test chats wipe hongi.
+              1-Click me saari sample chats, mock messages aur demo records delete hokar 100% blank live workspace ho jayega.
             </div>
 
             <button

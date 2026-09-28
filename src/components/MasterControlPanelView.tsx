@@ -26,7 +26,10 @@ import {
   FileText,
   Copy,
   ExternalLink,
-  BookOpen
+  BookOpen,
+  Eye,
+  EyeOff,
+  KeyRound
 } from 'lucide-react';
 
 export const MasterControlPanelView: React.FC = () => {
@@ -37,11 +40,20 @@ export const MasterControlPanelView: React.FC = () => {
     approveUser,
     rejectUser,
     publishSystemUpdate,
+    viewUserWorkspace,
     metaConfig
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'version' | 'privacy' | 'system'>('pending');
   const [searchTerm, setSearchTerm] = useState('');
+  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+
+  const togglePasswordVisibility = (userId: string) => {
+    setVisiblePasswords(prev => ({
+      ...prev,
+      [userId]: !prev[userId]
+    }));
+  };
   
   // Publish update form state
   const [newReleaseNotes, setNewReleaseNotes] = useState('');
@@ -237,6 +249,23 @@ export const MasterControlPanelView: React.FC = () => {
                         <span>City:</span>
                         <strong className="text-white">{user.city}</strong>
                       </div>
+                      <div className="flex items-center justify-between text-slate-300 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-800">
+                        <div className="flex items-center gap-2">
+                          <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                          <span className="text-slate-400 text-[11px]">Password:</span>
+                          <span className="font-bold text-amber-300 tracking-wider">
+                            {visiblePasswords[user.id] ? user.password || '123456' : '••••••••'}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => togglePasswordVisibility(user.id)}
+                          className="p-1 hover:text-white text-slate-400 transition"
+                          title={visiblePasswords[user.id] ? 'Hide Password' : 'Show Password'}
+                        >
+                          {visiblePasswords[user.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                       <div className="flex items-center gap-2 text-slate-400 text-[11px]">
                         <Lock className="w-3 h-3 text-slate-500" />
                         <span>Tenant ID:</span>
@@ -296,10 +325,11 @@ export const MasterControlPanelView: React.FC = () => {
                   <tr>
                     <th className="p-3.5 sm:px-4">Business / User</th>
                     <th className="p-3.5 sm:px-4">Mobile & Login</th>
+                    <th className="p-3.5 sm:px-4">Password</th>
                     <th className="p-3.5 sm:px-4">City</th>
                     <th className="p-3.5 sm:px-4">Tenant Scope</th>
                     <th className="p-3.5 sm:px-4">Approval Date</th>
-                    <th className="p-3.5 sm:px-4">Status</th>
+                    <th className="p-3.5 sm:px-4">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/80 font-mono">
@@ -319,6 +349,21 @@ export const MasterControlPanelView: React.FC = () => {
                       <td className="p-3.5 sm:px-4 text-emerald-400 font-bold">
                         {u.mobile}
                       </td>
+                      <td className="p-3.5 sm:px-4">
+                        <div className="flex items-center gap-1.5 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800 w-fit">
+                          <span className="font-bold text-amber-300 text-xs tracking-wider">
+                            {visiblePasswords[u.id] ? u.password || '123456' : '••••••••'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => togglePasswordVisibility(u.id)}
+                            className="p-0.5 hover:text-white text-slate-500 transition"
+                            title={visiblePasswords[u.id] ? 'Hide Password' : 'Show Password'}
+                          >
+                            {visiblePasswords[u.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                          </button>
+                        </div>
+                      </td>
                       <td className="p-3.5 sm:px-4 font-sans">
                         {u.city}
                       </td>
@@ -331,15 +376,21 @@ export const MasterControlPanelView: React.FC = () => {
                         {u.approvedAt ? new Date(u.approvedAt).toLocaleDateString() : 'Active'}
                       </td>
                       <td className="p-3.5 sm:px-4">
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                          Fresh Panel Live
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => viewUserWorkspace(u)}
+                          className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-950/40 transition whitespace-nowrap"
+                          title="Is user ke panel ke andar jakar direct view karein"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>View Panel</span>
+                        </button>
                       </td>
                     </tr>
                   ))}
                   {filteredApproved.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-500 font-sans">
+                      <td colSpan={7} className="p-8 text-center text-slate-500 font-sans">
                         Koi approved user nahi mila.
                       </td>
                     </tr>

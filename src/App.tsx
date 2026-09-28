@@ -49,7 +49,9 @@ function AppContent() {
     systemVersion,
     logout,
     verifyMasterPanelPassword,
-    isMasterPanelUnlocked
+    isMasterPanelUnlocked,
+    impersonatingFromMaster,
+    returnToMaster
   } = useApp();
 
   // Master open password modal state (pass: 123456789)
@@ -201,7 +203,41 @@ function AppContent() {
 
         {/* View Router Scroll View */}
         <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 pb-20 lg:pb-6 scrollbar-thin scrollbar-thumb-slate-800">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto space-y-4">
+            {/* MASTER IMPERSONATION BANNER (Jab Master kisi user ka panel inspect kar raha ho) */}
+            {impersonatingFromMaster && (
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-red-950/80 via-purple-950/80 to-slate-900 border-2 border-red-500/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center border border-red-500/30 shrink-0">
+                    <ShieldAlert className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-2">
+                      <span>Master Admin Mode: Inspecting User Panel</span>
+                      <span className="px-2 py-0.2 rounded-full text-[10px] bg-red-500/20 text-red-300 border border-red-500/40">
+                        {currentUser?.businessName || 'User Account'}
+                      </span>
+                    </div>
+                    <div className="text-slate-300 text-[11px] mt-0.5">
+                      Aap Master Admin ke roop me is user <strong>({currentUser?.mobile})</strong> ka panel aur settings dekh rahe hain.
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    returnToMaster();
+                    setActiveTab('master-panel');
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg shadow-red-950/50 flex items-center justify-center gap-2 transition shrink-0"
+                >
+                  <ShieldAlert className="w-4 h-4" />
+                  <span>Return to Master Admin Panel</span>
+                </button>
+              </div>
+            )}
+
             {/* MASTER PANEL WITH PASSWORD CHECK (PASS: 123456789) */}
             {activeTab === 'master-panel' && (
               isMasterPanelUnlocked ? (

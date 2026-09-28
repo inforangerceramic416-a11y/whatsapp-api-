@@ -27,7 +27,7 @@ export const CampaignsView: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // New campaign form state
-  const [campaignName, setCampaignName] = useState('Diwali 2026 Morbi Dealer Special Offer');
+  const [campaignName, setCampaignName] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [audienceType, setAudienceType] = useState<'segment' | 'all' | 'custom_numbers'>('segment');
   const [selectedSegmentId, setSelectedSegmentId] = useState(segments[0]?.id || '');

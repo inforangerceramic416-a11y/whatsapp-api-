@@ -33,10 +33,10 @@ export const DashboardView: React.FC<{ onNavigate: (tab: any) => void }> = ({ on
   const totalContacts = contacts.length;
   const activeChats = conversations.filter(c => c.status === 'open').length;
   const unreadChats = conversations.reduce((acc, c) => acc + (c.unreadCount || 0), 0);
-  const totalSent = campaigns.reduce((acc, c) => acc + (c.sentCount || 0), 1250);
-  const totalDelivered = campaigns.reduce((acc, c) => acc + (c.deliveredCount || 0), 1188);
-  const totalRead = campaigns.reduce((acc, c) => acc + (c.readCount || 0), 980);
-  const totalFailed = campaigns.reduce((acc, c) => acc + (c.failedCount || 0), 18);
+  const totalSent = campaigns.reduce((acc, c) => acc + (c.sentCount || 0), 0);
+  const totalDelivered = campaigns.reduce((acc, c) => acc + (c.deliveredCount || 0), 0);
+  const totalRead = campaigns.reduce((acc, c) => acc + (c.readCount || 0), 0);
+  const totalFailed = campaigns.reduce((acc, c) => acc + (c.failedCount || 0), 0);
   const approvedTemplates = templates.filter(t => t.status === 'APPROVED').length;
 
   return (
