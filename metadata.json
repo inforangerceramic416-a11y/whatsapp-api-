@@ -1,0 +1,8 @@
+{
+  "name": "WhatsApp Business Platform - Laxtone Ceramic",
+  "description": "Enterprise Meta WhatsApp Business Platform & Cloud API SaaS Panel with Coexistence, Shared Team Inbox, Templates, Automation, Contacts CRM, Broadcasts, and Real-time Firestore sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

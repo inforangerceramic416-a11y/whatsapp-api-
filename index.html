@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Business Platform - Laxtone Ceramic</title>
+    <meta name="description" content="Enterprise Meta WhatsApp Business Platform & Cloud API SaaS Panel with Coexistence, Shared Team Inbox, Templates, Automation, Contacts CRM, Broadcasts, and Real-time Firestore sync." />
+    <meta property="og:title" content="WhatsApp Business Platform - Laxtone Ceramic" />
+    <meta property="og:description" content="Enterprise Meta WhatsApp Business Platform & Cloud API SaaS Panel with Coexistence, Shared Team Inbox, Templates, Automation, Contacts CRM, Broadcasts, and Real-time Firestore sync." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        if (window.FB) {
+          window.FB.init({
+            appId: '108492019482910',
+            cookie: true,
+            xfbml: true,
+            version: 'v21.0'
+          });
+        }
+      };
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

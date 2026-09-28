@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Multi-tenant user profiles, registration details, approval status, and credentials",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "mobile": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "city": { "type": "string" },
+        "role": { "type": "string", "enum": ["master", "user"] },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "blocked"] },
+        "tenantId": { "type": "string" },
+        "businessName": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "approvedAt": { "type": "string" }
+      },
+      "required": ["id", "mobile", "password", "status", "role"]
+    },
+    "SystemVersion": {
+      "title": "SystemVersion",
+      "description": "Global master system version, sequence code, broadcast announcements and panel updates",
+      "type": "object",
+      "properties": {
+        "sequence": { "type": "number" },
+        "versionCode": { "type": "string" },
+        "releaseNotes": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" },
+        "globalNotice": { "type": "string" }
+      },
+      "required": ["sequence", "versionCode"]
+    },
+    "MetaConfig": {
+      "title": "MetaConfig",
+      "description": "Meta WhatsApp Business Cloud API Configuration, Credentials, and Coexistence State",
+      "type": "object",
+      "properties": {
+        "appId": { "type": "string" },
+        "businessPortfolioId": { "type": "string" },
+        "wabaId": { "type": "string" },
+        "phoneNumberId": { "type": "string" },
+        "displayPhoneNumber": { "type": "string" },
+        "businessName": { "type": "string" },
+        "permanentToken": { "type": "string" },
+        "status": { "type": "string" },
+        "coexistenceEnabled": { "type": "boolean" },
+        "coexistenceStatus": { "type": "string" },
+        "webhookStatus": { "type": "string" },
+        "tokenStatus": { "type": "string" },
+        "lastSyncTime": { "type": "string" }
+      },
+      "required": ["displayPhoneNumber", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserAccount" },
+      "description": "Registered and master user accounts"
+    },
+    "/system_settings/version": {
+      "schema": { "$ref": "#/entities/SystemVersion" },
+      "description": "Global system sequence version published from master panel"
+    },
+    "/tenants/{tenantId}/meta_config/{docId}": {
+      "schema": { "$ref": "#/entities/MetaConfig" },
+      "description": "Per-tenant isolated WhatsApp config"
+    }
+  }
+}
