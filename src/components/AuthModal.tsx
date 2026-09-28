@@ -105,15 +105,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
           <p className="text-xs text-slate-400 mt-1">
             Official Meta Cloud API • Coexistence • Multi-Tenant SaaS
           </p>
-
-          {/* Quick Demo Credentials hint for testing */}
-          <div className="mt-3 p-2 bg-slate-950/60 rounded-xl border border-slate-800/80 text-[11px] text-slate-300 flex items-center justify-between">
-            <span className="text-emerald-400 font-medium">Master Login:</span>
-            <code className="text-slate-200 font-mono">9974428034</code>
-            <span className="text-slate-500">•</span>
-            <span className="text-emerald-400 font-medium">Pass:</span>
-            <code className="text-slate-200 font-mono">77777777</code>
-          </div>
         </div>
 
         {/* Tab switchers: Login / Signup */}
@@ -179,7 +170,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                     required
                     value={loginMobile}
                     onChange={(e) => setLoginMobile(e.target.value)}
-                    placeholder="Enter mobile no (e.g. 9974428034)"
+                    placeholder="Enter mobile number"
                     className="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-white font-mono placeholder:text-slate-600 focus:outline-none transition"
                   />
                 </div>
@@ -225,19 +216,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
                   </>
                 )}
               </button>
-
-              <div className="pt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginMobile('9974428034');
-                    setLoginPassword('77777777');
-                  }}
-                  className="text-[11px] text-emerald-400 hover:underline inline-flex items-center gap-1"
-                >
-                  <KeyRound className="w-3 h-3" /> Quick fill Master Login
-                </button>
-              </div>
             </form>
           )}
 

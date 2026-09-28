@@ -19,6 +19,7 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { SettingsView } from './components/SettingsView';
 import { AuthModal } from './components/AuthModal';
 import { MasterControlPanelView } from './components/MasterControlPanelView';
+import { QuickLinksView } from './components/QuickLinksView';
 import {
   Menu,
   SmartphoneNfc,
@@ -219,7 +220,7 @@ function AppContent() {
 
                   {masterPasswordError && (
                     <div className="p-3 bg-red-950/60 border border-red-500/40 rounded-xl text-xs text-red-300 text-center font-semibold">
-                      Invalid Security Password! Hint: 123456789
+                      Invalid Master Security Password! Please try again.
                     </div>
                   )}
 
@@ -230,7 +231,7 @@ function AppContent() {
                         required
                         value={masterPasswordInput}
                         onChange={(e) => setMasterPasswordInput(e.target.value)}
-                        placeholder="Master Open Password (123456789)"
+                        placeholder="Enter Master Access Password"
                         className="w-full bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-4 py-3 text-sm text-center text-white font-mono tracking-widest focus:outline-none transition"
                       />
                     </div>
@@ -241,11 +242,6 @@ function AppContent() {
                       <KeyRound className="w-4 h-4" />
                       <span>Unlock Master Panel</span>
                     </button>
-                    <div className="text-center">
-                      <span className="text-[11px] text-slate-500">
-                        Default Master Access Password: <code className="text-red-400 font-mono">123456789</code>
-                      </span>
-                    </div>
                   </form>
                 </div>
               )
@@ -269,6 +265,7 @@ function AppContent() {
             {activeTab === 'whatsapp-connection' && <WhatsAppConnectionView />}
             {activeTab === 'company-profile' && <CompanyProfileView />}
             {activeTab === 'team' && <TeamView />}
+            {activeTab === 'quick-links' && <QuickLinksView />}
             {activeTab === 'settings' && <SettingsView />}
           </div>
         </main>

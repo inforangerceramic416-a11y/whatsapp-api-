@@ -24,7 +24,8 @@ import {
   X,
   ShieldAlert,
   LogOut,
-  Sparkles
+  Sparkles,
+  Link2
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -47,6 +48,7 @@ export type TabType =
   | 'whatsapp-connection'
   | 'company-profile'
   | 'team'
+  | 'quick-links'
   | 'settings'
   | 'master-panel';
 
@@ -138,6 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'api-webhooks', label: 'API & Webhooks', icon: Webhook },
         { id: 'company-profile', label: 'Laxtone Ceramic Profile', icon: Building2 },
         { id: 'team', label: 'Team & Agents', icon: ShieldCheck },
+        { id: 'quick-links', label: 'Quick Links', icon: Link2, highlight: true },
         { id: 'settings', label: 'Settings & Security', icon: Settings },
       ]
     }

@@ -21,7 +21,12 @@ import {
   AlertTriangle,
   Radio,
   FileCode2,
-  UserCheck
+  UserCheck,
+  Shield,
+  FileText,
+  Copy,
+  ExternalLink,
+  BookOpen
 } from 'lucide-react';
 
 export const MasterControlPanelView: React.FC = () => {
@@ -35,7 +40,7 @@ export const MasterControlPanelView: React.FC = () => {
     metaConfig
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'version' | 'system'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'version' | 'privacy' | 'system'>('pending');
   const [searchTerm, setSearchTerm] = useState('');
   
   // Publish update form state
@@ -152,6 +157,18 @@ export const MasterControlPanelView: React.FC = () => {
         >
           <Sparkles className="w-4 h-4" />
           <span>Publish Version Update ({systemVersion.versionCode})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('privacy')}
+          className={`px-4 py-2 rounded-xl transition flex items-center gap-2 shrink-0 ${
+            activeTab === 'privacy'
+              ? 'bg-purple-600 text-white font-bold shadow-lg shadow-purple-950/40'
+              : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'
+          }`}
+        >
+          <Shield className="w-4 h-4" />
+          <span>Privacy & Policy (WhatsApp API)</span>
         </button>
       </div>
 
@@ -445,6 +462,148 @@ export const MasterControlPanelView: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: PRIVACY & POLICY (WHATSAPP BUSINESS CLOUD API) */}
+      {activeTab === 'privacy' && (
+        <div className="space-y-6">
+          {/* Header Card */}
+          <div className="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 relative overflow-hidden shadow-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 uppercase tracking-wider flex items-center gap-1.5 w-fit">
+                  <Shield className="w-3 h-3 text-purple-400" />
+                  Meta WhatsApp Business API Privacy & Compliance Constitution
+                </span>
+                <h2 className="text-lg sm:text-xl font-black text-white tracking-tight mt-2">
+                  Privacy Policy & Data Protection for WhatsApp Cloud API
+                </h2>
+                <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                  Yeh Privacy Policy document Meta WhatsApp Business Cloud API v21.0, Embedded Signup, Coexistence, aur multi-tenant data isolation compliance ke liye tayyar kiya gaya hai.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = document.getElementById('privacy-policy-content')?.innerText || '';
+                    navigator.clipboard.writeText(text);
+                    alert('Privacy Policy copied to clipboard!');
+                  }}
+                  className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-purple-950/40 transition"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Copy Policy Text</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Policy Document Sections */}
+          <div id="privacy-policy-content" className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-8 text-slate-300 text-xs leading-relaxed">
+            {/* 1. Introduction */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-xs">
+                  1
+                </span>
+                <h3 className="text-sm font-bold text-white">Introduction & Scope of Privacy Policy</h3>
+              </div>
+              <p className="text-slate-300 pl-8">
+                Yeh Privacy Policy document define karta hai ki <strong>WhatsApp Business Cloud API Platform</strong> par registered users, tenants, aur unke WhatsApp customers ka personal data kaise collect, process, store aur protect kiya jata hai. Hum <strong>Meta Platforms, Inc.</strong> ke WhatsApp Business Terms of Service, Business Data Processing Terms, aur Information Security Standards ka 100% adherence karte hain.
+              </p>
+            </section>
+
+            {/* 2. Data Collected */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 font-bold flex items-center justify-center text-xs">
+                  2
+                </span>
+                <h3 className="text-sm font-bold text-white">Information We Collect via WhatsApp Cloud API</h3>
+              </div>
+              <div className="pl-8 space-y-2">
+                <p>Hum Meta WhatsApp Cloud API integration ke dwara nimnlikhit data process karte hain:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-400">
+                  <li><strong>Customer Contact Details:</strong> Customer mobile phone number with country code, WhatsApp Display Name, Profile Photo URL.</li>
+                  <li><strong>Message Payloads:</strong> Inbound aur outbound text messages, media attachments (catalogue PDFs, tile brochures, images, interactive quick-reply button clicks).</li>
+                  <li><strong>Delivery & Read Receipts:</strong> Message status timestamps (sent, delivered, read, failed error codes).</li>
+                  <li><strong>Tenant Credentials:</strong> WhatsApp Business Account (WABA) ID, Phone Number Node ID, Business Portfolio ID, aur System User Access Tokens (encrypted in Firestore).</li>
+                </ul>
+              </div>
+            </section>
+
+            {/* 3. Opt-in & Spam Prevention */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center text-xs">
+                  3
+                </span>
+                <h3 className="text-sm font-bold text-white">Customer Opt-in & Anti-Spam Compliance</h3>
+              </div>
+              <div className="pl-8 space-y-2">
+                <p>Meta WhatsApp Business Policy ke tehat koi bhi unsolicited spam message bhejti prohibited hai:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-400">
+                  <li><strong>Explicit Consent (Opt-in):</strong> Business sirf unhi contacts ko marketing campaigns bhej sakti hai jinhone website, form, ya trade fair me consent diya ho.</li>
+                  <li><strong>Easy Opt-Out ("STOP" Keyword):</strong> Har customer ko kisi bhi samay "STOP" ya "UNSUBSCRIBE" reply karke messaging band karne ka adhikar hai. System automatically opt-out flag set karega.</li>
+                  <li><strong>Quality Rating Protection:</strong> WhatsApp Phone Number quality rating (GREEN / HIGH TIER) maintain karne ke liye Meta ke rate-limits aur messaging tier rules enforce kiye jate hain.</li>
+                </ul>
+              </div>
+            </section>
+
+            {/* 4. Multi-Tenant Data Isolation */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center text-xs">
+                  4
+                </span>
+                <h3 className="text-sm font-bold text-white">Multi-Tenant Data Isolation & Security</h3>
+              </div>
+              <div className="pl-8 space-y-2">
+                <p>
+                  Platform par har ek approved user ka tenant data puri tarah isolated rehta hai. Ek tenant ke customers, chats, templates, campaigns ya credentials dusre kisi bhi tenant ko accessible nahi hote. Master Admin sirf user approval aur system updates manage karta hai, end-customer private chats strictly tenant-scoped hoti hain.
+                </p>
+                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-[11px] text-emerald-400 font-mono">
+                  🔒 Data Storage: Google Cloud Firestore (Asia-East1) with TLS 1.3 in-transit encryption and AES-256 at-rest encryption.
+                </div>
+              </div>
+            </section>
+
+            {/* 5. Coexistence Policy */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-xs">
+                  5
+                </span>
+                <h3 className="text-sm font-bold text-white">WhatsApp Business App Coexistence Policy</h3>
+              </div>
+              <p className="text-slate-300 pl-8">
+                Jab WhatsApp Business Mobile App aur Cloud API coexistence mode me operate karte hain, to mobile phone se bheje gaye messages aur Web API panel ke messages synchronize hote hain. User ko dono platforms par ek samaan audit trail aur end-to-end reliability milti hai.
+              </p>
+            </section>
+
+            {/* 6. Contact & Grievance Officer */}
+            <section className="space-y-3 pt-4 border-t border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-red-500/20 text-red-400 font-bold flex items-center justify-center text-xs">
+                  6
+                </span>
+                <h3 className="text-sm font-bold text-white">Grievance & Privacy Support Contact</h3>
+              </div>
+              <div className="pl-8 text-slate-400 space-y-1">
+                <p>Kisi bhi data privacy query, deletion request ya Meta policy clarification ke liye sampark karein:</p>
+                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-[11px] text-slate-300 font-mono">
+                  <div><strong>Platform:</strong> WhatsApp Business Platform SaaS Panel</div>
+                  <div><strong>Email:</strong> info.rangerceramic416@gmail.com</div>
+                  <div><strong>Support Line:</strong> +91 99744 28034 / +91 90992 68044</div>
+                  <div><strong>Address:</strong> 8-A National Highway, Morbi, Gujarat 363642, India</div>
+                  <div><strong>Last Updated:</strong> September 2026 (Compliant with Meta Graph API v21.0)</div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       )}
