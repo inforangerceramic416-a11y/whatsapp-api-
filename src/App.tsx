@@ -288,8 +288,8 @@ function AppContent() {
             {activeTab === 'contacts' && <ContactsView />}
             {activeTab === 'campaigns' && <CampaignsView />}
             {activeTab === 'templates' && <TemplatesView />}
-            {activeTab === 'automation' && <AutomationView />}
-            {activeTab === 'chatbots' && <AutomationView />}
+            {activeTab === 'automation' && <AutomationView initialMode="automation" />}
+            {activeTab === 'chatbots' && <AutomationView initialMode="chatbots" />}
             {activeTab === 'ai-agent' && <AIAgentView />}
             {activeTab === 'flows' && <FlowsFormsView />}
             {activeTab === 'forms' && <FlowsFormsView />}

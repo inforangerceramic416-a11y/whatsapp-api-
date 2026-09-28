@@ -103,6 +103,8 @@ interface AppContextType {
   deleteTemplate: (id: string) => Promise<void>;
   refreshTemplatesFromMeta: () => Promise<void>;
   createCampaign: (campaign: Omit<Campaign, 'id' | 'createdAt' | 'sentCount' | 'deliveredCount' | 'readCount' | 'failedCount' | 'repliedCount'>) => Promise<void>;
+  addAutomation: (workflow: Omit<AutomationWorkflow, 'id' | 'runsCount'>) => Promise<void>;
+  deleteAutomation: (id: string) => Promise<void>;
   toggleAutomation: (id: string) => Promise<void>;
   updateAIAgentConfig: (updates: Partial<AIAgentConfig>) => Promise<void>;
   assignConversationAgent: (conversationId: string, agentId: string, agentName: string) => Promise<void>;
@@ -825,6 +827,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch { }
   };
 
+  const addAutomation = async (workflow: Omit<AutomationWorkflow, 'id' | 'runsCount'>) => {
+    const newId = `auto_${Date.now()}`;
+    const newWorkflow: AutomationWorkflow = {
+      ...workflow,
+      id: newId,
+      runsCount: 0
+    };
+    setAutomations(prev => [newWorkflow, ...prev]);
+    try {
+      await setDoc(doc(db, COLLECTIONS.AUTOMATIONS, newId), newWorkflow);
+    } catch { }
+  };
+
+  const deleteAutomation = async (id: string) => {
+    setAutomations(prev => prev.filter(a => a.id !== id));
+    try {
+      await deleteDoc(doc(db, COLLECTIONS.AUTOMATIONS, id));
+    } catch { }
+  };
+
   const toggleAutomation = async (id: string) => {
     setAutomations(prev => prev.map(a => a.id === id ? { ...a, enabled: !a.enabled } : a));
     const target = automations.find(a => a.id === id);
@@ -935,10 +957,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // 2. Wipe all remote Firestore documents in data collections
     await purgeAllWorkspaceDataFromFirestore();
 
-    // 3. Switch off demo mode & set clean status
+    // 3. Switch off demo mode & set clean disconnected status
     await updateMetaConfig({
       isDemoMode: false,
-      lastSyncTime: 'Clean Live Workspace Activated'
+      status: 'DISCONNECTED',
+      qualityRating: 'UNKNOWN',
+      messagingLimit: 'TIER_NOT_CONNECTED',
+      coexistenceStatus: 'NOT_CONNECTED',
+      webhookStatus: 'PENDING_SETUP',
+      tokenStatus: 'INVALID',
+      lastSyncTime: 'Clean Live Workspace Activated (Awaiting Official Setup)'
     });
   };
 
@@ -996,6 +1024,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteTemplate,
         refreshTemplatesFromMeta,
         createCampaign,
+        addAutomation,
+        deleteAutomation,
         toggleAutomation,
         updateAIAgentConfig,
         assignConversationAgent,
